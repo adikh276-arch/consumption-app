@@ -64,8 +64,10 @@ export default function SetupModal({ open, onComplete }: Props) {
     };
 
     try {
-      await setCurrentUser(userId);
-      await supabase.from("consumption_profiles").upsert(profile, { onConflict: "user_id" });
+      if (supabase) {
+        await setCurrentUser(userId);
+        await supabase.from("consumption_profiles").upsert(profile, { onConflict: "user_id" });
+      }
     } catch (e) {
       console.error("Failed to save profile:", e);
     }

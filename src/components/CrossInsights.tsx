@@ -21,7 +21,7 @@ export default function CrossInsights({ logs }: Props) {
   const [insights, setInsights] = useState<Insight[]>([]);
 
   useEffect(() => {
-    if (!userId || logs.length === 0) return;
+    if (!userId || logs.length === 0 || !supabase) return;
 
     async function fetchInsights() {
       const found: Insight[] = [];
@@ -30,7 +30,7 @@ export default function CrossInsights({ logs }: Props) {
         await setCurrentUser(userId!);
 
         // Check sleep logs
-        const { data: sleepLogs } = await supabase
+        const { data: sleepLogs } = await supabase!
           .from("sleep_logs")
           .select("*")
           .eq("user_id", userId!);
@@ -45,7 +45,7 @@ export default function CrossInsights({ logs }: Props) {
 
       try {
         // Check mood logs
-        const { data: moodLogs } = await supabase
+        const { data: moodLogs } = await supabase!
           .from("mood_logs")
           .select("*")
           .eq("user_id", userId!);
@@ -60,7 +60,7 @@ export default function CrossInsights({ logs }: Props) {
 
       try {
         // Check energy logs
-        const { data: energyLogs } = await supabase
+        const { data: energyLogs } = await supabase!
           .from("energy_logs")
           .select("*")
           .eq("user_id", userId!);
