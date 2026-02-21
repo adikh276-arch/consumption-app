@@ -3,6 +3,9 @@ FROM node:20-alpine AS builder
 
 WORKDIR /build
 
+# Install build dependencies
+RUN apk add --no-cache python3 make g++
+
 # Set build environment
 ENV NODE_ENV=production \
     NODE_OPTIONS="--max-old-space-size=2048"
@@ -10,9 +13,8 @@ ENV NODE_ENV=production \
 # Install dependencies
 COPY package.json ./
 RUN npm cache clean --force && \
-    npm install --legacy-peer-deps && \
-    npm list vite && \
-    ls -la node_modules/.bin/vite
+    npm install --verbose && \
+    npm list vite
 
 # Copy source
 COPY . .
