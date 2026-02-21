@@ -28,6 +28,11 @@ export default function Index() {
     if (!userId) return;
 
     async function load() {
+      if (!supabase) {
+        setShowSetup(true);
+        setLoaded(true);
+        return;
+      }
       try {
         await setCurrentUser(userId!);
 
@@ -43,7 +48,6 @@ export default function Index() {
           setShowSetup(true);
         }
 
-        // Load recent logs (last 30 days for chart + history)
         const since = subDays(new Date(), 30).toISOString();
         const { data: logData } = await supabase
           .from("consumption_logs")
@@ -86,6 +90,7 @@ export default function Index() {
     };
 
     try {
+      if (!supabase) return;
       await setCurrentUser(userId);
       const { data } = await supabase
         .from("consumption_logs")
@@ -109,6 +114,7 @@ export default function Index() {
     if (!lastEntry?.id) return;
 
     try {
+      if (!supabase) return;
       await setCurrentUser(userId);
       await supabase
         .from("consumption_logs")
@@ -126,6 +132,7 @@ export default function Index() {
     async (id: number) => {
       if (!userId) return;
       try {
+        if (!supabase) return;
         await setCurrentUser(userId);
         await supabase
           .from("consumption_logs")

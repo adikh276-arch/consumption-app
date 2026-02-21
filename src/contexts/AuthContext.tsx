@@ -29,6 +29,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const token = params.get("token");
 
       if (!token) {
+        // In development/preview without token, use demo mode
+        if (import.meta.env.DEV || !import.meta.env.PROD) {
+          const demoId = 99999;
+          sessionStorage.setItem("eap_user_id", String(demoId));
+          setState({ userId: demoId, loading: false });
+          return;
+        }
         window.location.href = "/token";
         return;
       }
