@@ -19,11 +19,13 @@ export async function bootstrapAuth(): Promise<BootstrapAuthResult> {
     const token = params.get("token");
 
     if (!token) {
-        // No token found - hard redirect to /token
+        // No token found - hard redirect to /token page
+        console.error("[Auth] No token in URL");
         window.location.href = "/token";
-        // This never returns, but TypeScript needs a throw
         throw new Error("No token provided - redirecting to /token");
     }
+
+    console.log("[Auth] Token found, validating with API...");
 
     // 3. POST token to API to validate and get user_id
     try {
@@ -45,6 +47,8 @@ export async function bootstrapAuth(): Promise<BootstrapAuthResult> {
             throw new Error("Invalid user_id in response");
         }
 
+        console.log("[Auth] Success: user_id " + userId);
+
         // 5. Store user_id in sessionStorage
         sessionStorage.setItem("eap_user_id", String(userId));
 
@@ -56,7 +60,7 @@ export async function bootstrapAuth(): Promise<BootstrapAuthResult> {
         return { userId };
     } catch (error) {
         // ANY error redirects to /token
-        console.error("Auth bootstrap failed:", error);
+        console.error("[Auth] Bootstrap failed:", error);
         window.location.href = "/token";
         throw error;
     }

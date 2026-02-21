@@ -3,9 +3,9 @@ FROM node:20-alpine AS builder
 
 WORKDIR /build
 
-# Install dependencies
+# Install dependencies with multiple fallbacks
 COPY package.json package-lock.json ./
-RUN npm ci --prefer-offline --no-audit 2>&1 || npm install --legacy-peer-deps
+RUN npm ci --prefer-offline --no-audit 2>&1 || npm install --legacy-peer-deps --no-optional --no-fund 2>&1 || npm install --force
 
 # Copy source
 COPY . .
