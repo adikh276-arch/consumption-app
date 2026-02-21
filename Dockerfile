@@ -7,15 +7,18 @@ WORKDIR /build
 ENV NODE_ENV=production \
     NODE_OPTIONS="--max-old-space-size=2048"
 
-# Install dependencies with multiple fallbacks
-COPY package.json package-lock.json ./
-RUN npm ci --prefer-offline --no-audit 2>&1 || npm install --legacy-peer-deps --no-optional --no-fund 2>&1 || npm install --force
+# Install dependencies
+COPY package.json ./
+RUN npm cache clean --force && \
+    npm install --legacy-peer-deps && \
+    npm list vite && \
+    ls -la node_modules/.bin/vite
 
 # Copy source
 COPY . .
 
-# Build with verbose output
-RUN npm run build -- --mode production
+# Build
+RUN npm run build
 
 # Serve stage
 FROM nginx:1.24-alpine
